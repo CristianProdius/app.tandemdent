@@ -1,6 +1,22 @@
 import { withSentryConfig } from "@sentry/nextjs";
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  experimental: {
+    serverComponentsExternalPackages: ['resend', '@react-email/components', 'html-to-text'],
+  },
+  webpack: (config, { isServer }) => {
+    // Fix for html-to-text / entities ESM issue
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+    return config;
+  },
+};
 
 export default withSentryConfig(nextConfig, {
   // For all available options, see:

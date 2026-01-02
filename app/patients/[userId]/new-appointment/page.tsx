@@ -1,20 +1,26 @@
 import Image from "next/image";
 
 import { AppointmentForm } from "@/components/forms/AppointmentForm";
+import { getDoctors } from "@/lib/actions/doctor.actions";
 import { getPatient } from "@/lib/actions/patient.actions";
+import { getServices } from "@/lib/actions/service.actions";
 
 const Appointment = async ({ params: { userId } }: SearchParamProps) => {
-  const patient = await getPatient(userId);
+  const [patient, doctors, services] = await Promise.all([
+    getPatient(userId),
+    getDoctors(),
+    getServices(),
+  ]);
 
   return (
     <div className="flex h-screen max-h-screen">
       <section className="remove-scrollbar container my-auto">
         <div className="sub-container max-w-[860px] flex-1 justify-between">
           <Image
-            src="/assets/icons/logo-full.svg"
+            src="/assets/icons/logo.png"
             height={1000}
             width={1000}
-            alt="logo"
+            alt="Tandem Dent"
             className="mb-12 h-10 w-fit"
           />
 
@@ -22,9 +28,11 @@ const Appointment = async ({ params: { userId } }: SearchParamProps) => {
             patientId={patient?.$id}
             userId={userId}
             type="create"
+            doctors={doctors}
+            services={services}
           />
 
-          <p className="copyright mt-10 py-12">© 2024 CarePluse</p>
+          <p className="copyright mt-10 py-12">© 2024 Tandem Dent</p>
         </div>
       </section>
 

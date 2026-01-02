@@ -24,12 +24,66 @@
     /* background: #1e2238; */
     background: transparent;
   }
+  :root {
+    /* Sidebar with gold accent */
+    --sidebar-background: 45 20% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 45 70% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 45 70% 96%;
+    --sidebar-accent-foreground: 45 70% 30%;
+    --sidebar-border: 45 20% 91%;
+    --sidebar-ring: 45 70% 53%;
+  }
+  .dark {
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 45 70% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 45 70% 53%;
+  }
 }
 
 @layer utilities {
+  /* ===== GLASSMORPHISM UTILITIES */
+  .glass {
+    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-glass;
+  }
+
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-lg border border-white/30 shadow-glass rounded-2xl;
+  }
+
+  .glass-sidebar {
+    @apply bg-white/60 backdrop-blur-2xl border-r border-white/20;
+  }
+
+  .glass-hover {
+    @apply transition-all duration-300 hover:bg-white/90 hover:shadow-glass-lg;
+  }
+
+  .glass-input {
+    @apply bg-white/70 backdrop-blur-sm border border-white/40 focus:border-gold-300 focus:ring-2 focus:ring-gold-200/50;
+  }
+
+  .gold-text-gradient {
+    @apply bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 bg-clip-text text-transparent;
+  }
+
+  .premium-bg {
+    @apply bg-gradient-to-br from-slate-50 via-white to-gold-50/30 min-h-screen;
+  }
+
+  .premium-bg-subtle {
+    @apply bg-gradient-to-br from-gray-50 via-white to-gold-50/20;
+  }
+
   /* ===== UTILITIES */
   .sidebar {
-    @apply remove-scrollbar w-full max-w-72 flex-col overflow-auto bg-black-800 px-7 py-10;
+    @apply remove-scrollbar w-full max-w-72 flex-col overflow-auto bg-gray-900 px-7 py-10;
   }
 
   .left-sidebar {
@@ -69,7 +123,7 @@
   }
 
   .copyright {
-    @apply text-14-regular justify-items-end text-center text-dark-600 xl:text-left;
+    @apply text-14-regular justify-items-end text-center text-gray-500 xl:text-left;
   }
 
   /* ==== SUCCESS */
@@ -78,12 +132,12 @@
   }
 
   .request-details {
-    @apply flex w-full flex-col items-center gap-8 border-y-2 border-dark-400 py-8 md:w-fit md:flex-row;
+    @apply flex w-full flex-col items-center gap-8 border-y-2 border-gray-200 py-8 md:w-fit md:flex-row;
   }
 
   /* ===== ADMIN */
   .admin-header {
-    @apply sticky top-3 z-20 mx-3 flex items-center justify-between rounded-2xl bg-dark-200 px-[5%] py-5 shadow-lg xl:px-12;
+    @apply sticky top-3 z-20 mx-3 flex items-center justify-between rounded-2xl bg-white/80 backdrop-blur-xl border border-white/30 px-[5%] py-5 shadow-glass xl:px-12;
   }
 
   .admin-main {
@@ -96,25 +150,25 @@
 
   /* ==== FORM */
   .radio-group {
-    @apply flex h-full flex-1 items-center gap-2 rounded-md border border-dashed border-dark-500 bg-dark-400 p-3;
+    @apply flex h-full flex-1 items-center gap-2 rounded-md border border-dashed border-gray-300 bg-gray-50 p-3;
   }
 
   .checkbox-label {
-    @apply cursor-pointer text-sm font-medium text-dark-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70 md:leading-none;
+    @apply cursor-pointer text-sm font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70 md:leading-none;
   }
 
   /* ==== File Upload */
   .file-upload {
-    @apply text-12-regular flex cursor-pointer  flex-col items-center justify-center gap-3 rounded-md border border-dashed border-dark-500 bg-dark-400 p-5;
+    @apply text-12-regular flex cursor-pointer  flex-col items-center justify-center gap-3 rounded-md border border-dashed border-gray-300 bg-gray-50 p-5;
   }
 
   .file-upload_label {
-    @apply flex flex-col justify-center gap-2 text-center text-dark-600;
+    @apply flex flex-col justify-center gap-2 text-center text-gray-500;
   }
 
   /* ==== Stat Card */
   .stat-card {
-    @apply flex flex-1 flex-col gap-6 rounded-2xl bg-cover p-6 shadow-lg;
+    @apply flex flex-1 flex-col gap-6 rounded-2xl bg-white/80 backdrop-blur-lg border border-white/30 p-6 shadow-glass transition-all duration-300 hover:shadow-glass-lg;
   }
 
   /* ==== Status Badge */
@@ -124,7 +178,7 @@
 
   /* Data Table */
   .data-table {
-    @apply z-10 w-full overflow-hidden rounded-lg border border-dark-400 shadow-lg;
+    @apply z-10 w-full overflow-hidden rounded-2xl bg-white/80 backdrop-blur-lg border border-white/30 shadow-glass;
   }
 
   .table-actions {
@@ -181,33 +235,33 @@
     @apply text-[12px] leading-[16px] font-semibold;
   }
 
-  /* =====  SHADCN OVERRIDES */
+  /* =====  SHADCN OVERRIDES - PREMIUM GLASSMORPHISM */
   .shad-primary-btn {
-    @apply bg-green-500 text-white !important;
+    @apply bg-gradient-to-r from-gold-500 to-gold-600 text-white shadow-gold-glow-sm hover:shadow-gold-glow transition-all duration-300 !important;
   }
 
   .shad-danger-btn {
-    @apply bg-red-700 text-white !important;
+    @apply bg-gradient-to-r from-red-500 to-red-700 text-white shadow-sm hover:shadow-md transition-all duration-300 !important;
   }
 
   .shad-gray-btn {
-    @apply border border-dark-500 cursor-pointer bg-dark-400 text-white !important;
+    @apply border border-gray-200 cursor-pointer bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-white hover:shadow-sm transition-all duration-300 !important;
   }
 
   .shad-input-label {
-    @apply text-14-medium text-dark-700 !important;
+    @apply text-14-medium text-gray-700 !important;
   }
 
   .shad-input {
-    @apply bg-dark-400 placeholder:text-dark-600 border-dark-500 h-11 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
+    @apply bg-white/80 backdrop-blur-sm placeholder:text-gray-400 border-gray-200 h-11 focus-visible:ring-2 focus-visible:ring-gold-200/50 focus-visible:border-gold-300 transition-all duration-200 !important;
   }
 
   .shad-input-icon {
-    @apply bg-dark-400 placeholder:text-dark-600 border-dark-500 h-11 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
+    @apply bg-white/80 backdrop-blur-sm placeholder:text-gray-400 border-gray-200 h-11 focus-visible:ring-2 focus-visible:ring-gold-200/50 focus-visible:border-gold-300 transition-all duration-200 !important;
   }
 
   .shad-textArea {
-    @apply bg-dark-400 placeholder:text-dark-600 border-dark-500 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
+    @apply bg-white/80 backdrop-blur-sm placeholder:text-gray-400 border-gray-200 focus-visible:ring-2 focus-visible:ring-gold-200/50 focus-visible:border-gold-300 transition-all duration-200 !important;
   }
 
   .shad-combobox-item {
@@ -215,19 +269,19 @@
   }
 
   .shad-combobox-trigger {
-    @apply h-11 !important;
+    @apply h-11 bg-white/80 backdrop-blur-sm !important;
   }
 
   .shad-select-trigger {
-    @apply bg-dark-400  placeholder:text-dark-600 border-dark-500 h-11 focus:ring-0 focus:ring-offset-0 !important;
+    @apply bg-white/80 backdrop-blur-sm placeholder:text-gray-400 border-gray-200 h-11 focus:ring-2 focus:ring-gold-200/50 focus:border-gold-300 transition-all duration-200 !important;
   }
 
   .shad-select-content {
-    @apply bg-dark-400 border-dark-500 !important;
+    @apply bg-white/95 backdrop-blur-xl border-gray-200 shadow-glass-lg !important;
   }
 
   .shad-dialog {
-    @apply bg-dark-400 border-dark-500 !important;
+    @apply bg-white/95 backdrop-blur-xl border-white/30 shadow-glass-lg !important;
   }
 
   .shad-dialog button {
@@ -235,19 +289,19 @@
   }
 
   .shad-error {
-    @apply text-red-400 !important;
+    @apply text-red-500 !important;
   }
 
   .shad-table {
-    @apply rounded-lg overflow-hidden !important;
+    @apply rounded-2xl overflow-hidden !important;
   }
 
   .shad-table-row-header {
-    @apply border-b border-dark-400 text-light-200 hover:bg-transparent !important;
+    @apply border-b border-gray-100 text-gray-600 bg-gray-50/50 hover:bg-transparent font-medium !important;
   }
 
   .shad-table-row {
-    @apply border-b border-dark-400 text-light-200 !important;
+    @apply border-b border-gray-100 text-gray-700 hover:bg-gold-50/30 transition-colors duration-200 !important;
   }
 
   .shad-otp {
@@ -255,11 +309,11 @@
   }
 
   .shad-otp-slot {
-    @apply text-36-bold justify-center flex border border-dark-500 rounded-lg size-16 gap-4 !important;
+    @apply text-36-bold justify-center flex border border-gray-200 bg-white/80 backdrop-blur-sm rounded-xl size-16 gap-4 focus:border-gold-400 focus:ring-2 focus:ring-gold-200/50 !important;
   }
 
   .shad-alert-dialog {
-    @apply space-y-5 bg-dark-400 border-dark-500 outline-none !important;
+    @apply space-y-5 bg-white/95 backdrop-blur-xl border-white/30 shadow-glass-lg outline-none !important;
   }
 
   .shad-sheet-content button {
@@ -268,12 +322,12 @@
 
   /* =====  REACT PHONE NUMBER INPUT OVERRIDES */
   .input-phone {
-    @apply mt-2 h-11 rounded-md px-3 text-sm border bg-dark-400 placeholder:text-dark-600 border-dark-500 !important;
+    @apply mt-2 h-11 rounded-md px-3 text-sm border bg-white/80 backdrop-blur-sm placeholder:text-gray-400 border-gray-200 focus-within:border-gold-300 focus-within:ring-2 focus-within:ring-gold-200/50 transition-all duration-200 !important;
   }
 
   /* =====  REACT DATE PICKER OVERRIDES */
   .date-picker {
-    @apply overflow-hidden border-transparent w-full placeholder:text-dark-600  h-11 text-14-medium rounded-md px-3 outline-none !important;
+    @apply overflow-hidden border-transparent w-full placeholder:text-gray-400 h-11 text-14-medium rounded-md px-3 outline-none !important;
   }
 }
 
@@ -290,45 +344,46 @@
 .react-datepicker__day-name,
 .react-datepicker__day,
 .react-datepicker-time__header {
-  background-color: #1a1d21 !important;
-  border-color: #363a3d !important;
-  color: #abb8c4 !important;
+  background-color: #ffffff !important;
+  border-color: #e5e7eb !important;
+  color: #374151 !important;
 }
 
 .react-datepicker__current-month,
 .react-datepicker__day-name,
 .react-datepicker-time__header {
-  color: #ffffff !important;
+  color: #111827 !important;
 }
 
 .react-datepicker__triangle {
-  fill: #1a1d21 !important;
-  color: #1a1d21 !important;
-  stroke: #1a1d21 !important;
+  fill: #ffffff !important;
+  color: #ffffff !important;
+  stroke: #ffffff !important;
 }
 
 .react-datepicker__time-list-item:hover {
-  background-color: #363a3d !important;
+  background-color: #f3f4f6 !important;
 }
 
 .react-datepicker__input-container input {
-  background-color: #1a1d21 !important;
+  background-color: #ffffff !important;
   width: 100%;
   outline: none;
+  color: #374151 !important;
 }
 
 .react-datepicker__day--selected {
-  background-color: #24ae7c !important;
+  background-color: #d4af37 !important;
   color: #ffffff !important;
   border-radius: 4px;
 }
 
 .react-datepicker__time-list-item--selected {
-  background-color: #24ae7c !important;
+  background-color: #d4af37 !important;
 }
 
 .react-datepicker__time-container {
-  border-left: 1px solid #363a3d !important;
+  border-left: 1px solid #e5e7eb !important;
 }
 
 .react-datepicker__time-list-item {
@@ -340,11 +395,27 @@
 .PhoneInputInput {
   outline: none;
   margin-left: 4px;
-  background: #1a1d21;
+  background: #ffffff;
   font-size: 14px;
   font-weight: 500;
+  color: #374151;
 }
 
 .PhoneInputInput::placeholder {
-  color: #1a1d21;
+  color: #9ca3af;
+}
+
+/* ===== BROWSER COMPATIBILITY FALLBACK */
+@supports not (backdrop-filter: blur(1px)) {
+  .glass,
+  .glass-card,
+  .glass-sidebar,
+  .glass-input {
+    background-color: rgba(255, 255, 255, 0.95);
+  }
+  .stat-card,
+  .data-table,
+  .admin-header {
+    background-color: rgba(255, 255, 255, 0.95);
+  }
 }

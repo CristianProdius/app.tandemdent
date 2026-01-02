@@ -22,6 +22,24 @@ export interface Patient extends Models.Document {
   identificationNumber: string | undefined;
   identificationDocument: FormData | undefined;
   privacyConsent: boolean;
+  // Patient portal auth fields
+  appwriteAuthId?: string;
+  magicLinkToken?: string;
+  magicLinkExpiresAt?: string;
+  sessionToken?: string;
+  sessionExpiresAt?: string;
+}
+
+export interface Doctor extends Models.Document {
+  name: string;
+  email: string;
+  phone?: string;
+  specialty?: string;
+  image?: string;
+  // Google Calendar integration
+  googleCalendarConnected: boolean;
+  googleRefreshToken?: string;
+  googleCalendarId?: string;
 }
 
 export interface Appointment extends Models.Document {
@@ -33,4 +51,29 @@ export interface Appointment extends Models.Document {
   note: string;
   userId: string;
   cancellationReason: string | null;
+  // New fields for notifications and calendar
+  doctorId?: string;
+  googleCalendarEventId?: string;
+  confirmationEmailSent?: boolean;
+  reminderEmailSent?: boolean;
+  createdBy?: string; // Admin who created the appointment
+}
+
+export interface EmailLog extends Models.Document {
+  appointmentId: string;
+  recipientEmail: string;
+  recipientType: "patient" | "doctor";
+  emailType: "confirmation" | "reminder" | "cancellation";
+  resendMessageId?: string;
+  status: "sent" | "delivered" | "failed";
+  sentAt: Date;
+  errorMessage?: string;
+}
+
+export interface Service extends Models.Document {
+  name: string;
+  description?: string;
+  duration: number; // Duration in minutes
+  price: number;
+  isActive: boolean;
 }

@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { Doctors } from "@/constants";
 import { getAppointment } from "@/lib/actions/appointment.actions";
 import { formatDateTime } from "@/lib/utils";
 
@@ -13,19 +12,18 @@ const RequestSuccess = async ({
   const appointmentId = (searchParams?.appointmentId as string) || "";
   const appointment = await getAppointment(appointmentId);
 
-  const doctor = Doctors.find(
-    (doctor) => doctor.name === appointment.primaryPhysician
-  );
+  const doctorName = appointment.primaryPhysician || "Necunoscut";
+  const doctorInitial = doctorName.charAt(0);
 
   return (
     <div className=" flex h-screen max-h-screen px-[5%]">
       <div className="success-img">
         <Link href="/">
           <Image
-            src="/assets/icons/logo-full.svg"
+            src="/assets/icons/logo.png"
             height={1000}
             width={1000}
-            alt="logo"
+            alt="Tandem Dent"
             className="h-10 w-fit"
           />
         </Link>
@@ -38,23 +36,19 @@ const RequestSuccess = async ({
             alt="success"
           />
           <h2 className="header mb-6 max-w-[600px] text-center">
-            Your <span className="text-green-500">appointment request</span> has
-            been successfully submitted!
+            <span className="text-gold-500">Cererea de programare</span> a fost
+            trimisă cu succes!
           </h2>
-          <p>We&apos;ll be in touch shortly to confirm.</p>
+          <p>Vă vom contacta în curând pentru confirmare.</p>
         </section>
 
         <section className="request-details">
-          <p>Requested appointment details: </p>
+          <p>Detaliile programării solicitate: </p>
           <div className="flex items-center gap-3">
-            <Image
-              src={doctor?.image!}
-              alt="doctor"
-              width={100}
-              height={100}
-              className="size-6"
-            />
-            <p className="whitespace-nowrap">Dr. {doctor?.name}</p>
+            <div className="flex size-6 items-center justify-center rounded-full bg-gold-100 text-xs font-medium text-gold-700">
+              {doctorInitial}
+            </div>
+            <p className="whitespace-nowrap">Dr. {doctorName}</p>
           </div>
           <div className="flex gap-2">
             <Image
@@ -69,11 +63,11 @@ const RequestSuccess = async ({
 
         <Button variant="outline" className="shad-primary-btn" asChild>
           <Link href={`/patients/${userId}/new-appointment`}>
-            New Appointment
+            Programare nouă
           </Link>
         </Button>
 
-        <p className="copyright">© 2024 CarePluse</p>
+        <p className="copyright">© 2024 Tandem Dent</p>
       </div>
     </div>
   );

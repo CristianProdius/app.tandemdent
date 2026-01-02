@@ -7,7 +7,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
@@ -54,7 +54,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="data-table">
       <Table className="shad-table">
-        <TableHeader className=" bg-dark-200">
+        <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="shad-table-row-header">
               {headerGroup.headers.map((header) => {
@@ -89,43 +89,42 @@ export function DataTable<TData, TValue>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+              <TableCell colSpan={columns.length} className="h-24 text-center text-gray-500">
+                Nu există rezultate.
               </TableCell>
             </TableRow>
           )}
         </TableBody>
       </Table>
-      <div className="table-actions">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-          className="shad-gray-btn"
-        >
-          <Image
-            src="/assets/icons/arrow.svg"
-            width={24}
-            height={24}
-            alt="arrow"
-          />
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-          className="shad-gray-btn"
-        >
-          <Image
-            src="/assets/icons/arrow.svg"
-            width={24}
-            height={24}
-            alt="arrow "
-            className="rotate-180"
-          />
-        </Button>
+      <div className="table-actions bg-white/50">
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <span>
+            Pagina {table.getState().pagination.pageIndex + 1} din{" "}
+            {table.getPageCount() || 1}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+            className="shad-gray-btn"
+          >
+            <ChevronLeft className="size-4" />
+            <span className="sr-only">Pagina anterioară</span>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+            className="shad-gray-btn"
+          >
+            <ChevronRight className="size-4" />
+            <span className="sr-only">Pagina următoare</span>
+          </Button>
+        </div>
       </div>
     </div>
   );

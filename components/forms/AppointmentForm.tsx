@@ -8,13 +8,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { SelectItem } from "@/components/ui/select";
-import { Doctors } from "@/constants";
 import {
   createAppointment,
   updateAppointment,
 } from "@/lib/actions/appointment.actions";
 import { getAppointmentSchema } from "@/lib/validation";
-import { Appointment } from "@/types/appwrite.types";
+import { Appointment, Doctor, Service } from "@/types/appwrite.types";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -28,12 +27,16 @@ export const AppointmentForm = ({
   type = "create",
   appointment,
   setOpen,
+  doctors = [],
+  services = [],
 }: {
   userId: string;
   patientId: string;
   type: "create" | "schedule" | "cancel";
   appointment?: Appointment;
   setOpen?: Dispatch<SetStateAction<boolean>>;
+  doctors?: Doctor[];
+  services?: Service[];
 }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -119,13 +122,13 @@ export const AppointmentForm = ({
   let buttonLabel;
   switch (type) {
     case "cancel":
-      buttonLabel = "Cancel Appointment";
+      buttonLabel = "Anulează programarea";
       break;
     case "schedule":
-      buttonLabel = "Schedule Appointment";
+      buttonLabel = "Confirmă programarea";
       break;
     default:
-      buttonLabel = "Submit Apppointment";
+      buttonLabel = "Trimite cererea";
   }
 
   return (
@@ -133,9 +136,9 @@ export const AppointmentForm = ({
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-6">
         {type === "create" && (
           <section className="mb-12 space-y-4">
-            <h1 className="header">New Appointment</h1>
+            <h1 className="header">Programare nouă</h1>
             <p className="text-dark-700">
-              Request a new appointment in 10 seconds.
+              Solicitați o programare în câteva secunde.
             </p>
           </section>
         )}
@@ -146,19 +149,25 @@ export const AppointmentForm = ({
               fieldType={FormFieldType.SELECT}
               control={form.control}
               name="primaryPhysician"
-              label="Doctor"
-              placeholder="Select a doctor"
+              label="Medic stomatolog"
+              placeholder="Selectați un medic"
             >
-              {Doctors.map((doctor, i) => (
-                <SelectItem key={doctor.name + i} value={doctor.name}>
+              {doctors.map((doctor) => (
+                <SelectItem key={doctor.$id} value={doctor.name}>
                   <div className="flex cursor-pointer items-center gap-2">
-                    <Image
-                      src={doctor.image}
-                      width={32}
-                      height={32}
-                      alt="doctor"
-                      className="rounded-full border border-dark-500"
-                    />
+                    {doctor.image ? (
+                      <Image
+                        src={doctor.image}
+                        width={32}
+                        height={32}
+                        alt={doctor.name}
+                        className="rounded-full border border-dark-500"
+                      />
+                    ) : (
+                      <div className="flex size-8 items-center justify-center rounded-full bg-gold-100 text-sm font-medium text-gold-700">
+                        {doctor.name.charAt(0)}
+                      </div>
+                    )}
                     <p>{doctor.name}</p>
                   </div>
                 </SelectItem>
@@ -169,29 +178,40 @@ export const AppointmentForm = ({
               fieldType={FormFieldType.DATE_PICKER}
               control={form.control}
               name="schedule"
-              label="Expected appointment date"
+              label="Data și ora programării"
               showTimeSelect
-              dateFormat="MM/dd/yyyy  -  h:mm aa"
+              dateFormat="dd/MM/yyyy  -  HH:mm"
             />
 
             <div
               className={`flex flex-col gap-6  ${type === "create" && "xl:flex-row"}`}
             >
               <CustomFormField
-                fieldType={FormFieldType.TEXTAREA}
+                fieldType={FormFieldType.SELECT}
                 control={form.control}
                 name="reason"
-                label="Appointment reason"
-                placeholder="Annual montly check-up"
+                label="Serviciu"
+                placeholder="Selectați serviciul"
                 disabled={type === "schedule"}
-              />
+              >
+                {services.map((service) => (
+                  <SelectItem key={service.$id} value={service.name}>
+                    <div className="flex cursor-pointer items-center justify-between gap-4">
+                      <span>{service.name}</span>
+                      <span className="text-sm text-dark-600">
+                        {service.duration} min
+                      </span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </CustomFormField>
 
               <CustomFormField
                 fieldType={FormFieldType.TEXTAREA}
                 control={form.control}
                 name="note"
-                label="Comments/notes"
-                placeholder="Prefer afternoon appointments, if possible"
+                label="Comentarii/observații"
+                placeholder="Prefer programări după-amiază, dacă este posibil"
                 disabled={type === "schedule"}
               />
             </div>
@@ -203,8 +223,8 @@ export const AppointmentForm = ({
             fieldType={FormFieldType.TEXTAREA}
             control={form.control}
             name="cancellationReason"
-            label="Reason for cancellation"
-            placeholder="Urgent meeting came up"
+            label="Motivul anulării"
+            placeholder="A apărut o urgență"
           />
         )}
 

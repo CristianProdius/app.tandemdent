@@ -1,32 +1,45 @@
-import clsx from "clsx";
-import Image from "next/image";
+import { CheckCircle, Clock, XCircle } from "lucide-react";
 
-import { StatusIcon } from "@/constants";
+import { cn } from "@/lib/utils";
+
+const statusConfig = {
+  scheduled: {
+    label: "Confirmat",
+    bgClass: "bg-teal-500/20 backdrop-blur-sm",
+    textClass: "text-teal-700",
+    dotClass: "bg-teal-500",
+    Icon: CheckCircle,
+  },
+  pending: {
+    label: "În așteptare",
+    bgClass: "bg-gold-500/20 backdrop-blur-sm",
+    textClass: "text-gold-700",
+    dotClass: "bg-gold-500",
+    Icon: Clock,
+  },
+  cancelled: {
+    label: "Anulat",
+    bgClass: "bg-red-500/20 backdrop-blur-sm",
+    textClass: "text-red-700",
+    dotClass: "bg-red-500",
+    Icon: XCircle,
+  },
+};
 
 export const StatusBadge = ({ status }: { status: Status }) => {
+  const config = statusConfig[status];
+  const { Icon } = config;
+
   return (
     <div
-      className={clsx("status-badge", {
-        "bg-green-600": status === "scheduled",
-        "bg-blue-600": status === "pending",
-        "bg-red-600": status === "cancelled",
-      })}
+      className={cn(
+        "status-badge border border-white/30",
+        config.bgClass
+      )}
     >
-      <Image
-        src={StatusIcon[status]}
-        alt="doctor"
-        width={24}
-        height={24}
-        className="h-fit w-3"
-      />
-      <p
-        className={clsx("text-12-semibold capitalize", {
-          "text-green-500": status === "scheduled",
-          "text-blue-500": status === "pending",
-          "text-red-500": status === "cancelled",
-        })}
-      >
-        {status}
+      <Icon className={cn("size-3.5", config.textClass)} />
+      <p className={cn("text-12-semibold", config.textClass)}>
+        {config.label}
       </p>
     </div>
   );

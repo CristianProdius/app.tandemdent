@@ -5,7 +5,7 @@ declare type SearchParamProps = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
-declare type Gender = "Male" | "Female" | "Other";
+declare type Gender = "Masculin" | "Feminin" | "Altul";
 declare type Status = "pending" | "scheduled" | "cancelled";
 
 declare interface CreateUserParams {
@@ -51,7 +51,45 @@ declare type CreateAppointmentParams = {
 declare type UpdateAppointmentParams = {
   appointmentId: string;
   userId: string;
-  timeZone: string;
+  timeZone?: string;
   appointment: Appointment;
   type: string;
 };
+
+// Doctor params
+declare interface CreateDoctorParams {
+  name: string;
+  email: string;
+  phone?: string;
+  specialty?: string;
+  image?: string;
+}
+
+declare interface UpdateDoctorParams extends Partial<CreateDoctorParams> {
+  googleCalendarConnected?: boolean;
+  googleRefreshToken?: string;
+  googleCalendarId?: string;
+}
+
+// Admin appointment creation (with patient search/select)
+declare type CreateAppointmentAdminParams = {
+  patientId: string;
+  doctorId: string;
+  primaryPhysician: string;
+  reason: string;
+  schedule: Date;
+  note?: string;
+  createdBy: string;
+};
+
+// Calendar link types
+declare interface CalendarLinks {
+  google: string;
+  outlook: string;
+  icsUrl: string;
+}
+
+// Email types
+declare type EmailRecipientType = "patient" | "doctor";
+declare type EmailType = "confirmation" | "reminder" | "cancellation";
+declare type EmailStatus = "sent" | "delivered" | "failed";

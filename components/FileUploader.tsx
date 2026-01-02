@@ -39,11 +39,11 @@ export const FileUploader = ({ files, onChange }: FileUploaderProps) => {
           />
           <div className="file-upload_label">
             <p className="text-14-regular ">
-              <span className="text-green-500">Click to upload </span>
-              or drag and drop
+              <span className="text-gold-500">Click pentru a încărca </span>
+              sau trageți și plasați
             </p>
             <p className="text-12-regular">
-              SVG, PNG, JPG or GIF (max. 800x400px)
+              SVG, PNG, JPG sau GIF (max. 800x400px)
             </p>
           </div>
         </>

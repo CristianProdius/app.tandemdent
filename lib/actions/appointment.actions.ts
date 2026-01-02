@@ -11,7 +11,7 @@ import {
   databases,
   messaging,
 } from "../appwrite.config";
-import { formatDateTime, parseStringify } from "../utils";
+import { parseStringify } from "../utils";
 
 //  CREATE APPOINTMENT
 export const createAppointment = async (
@@ -22,8 +22,34 @@ export const createAppointment = async (
       DATABASE_ID!,
       APPOINTMENT_COLLECTION_ID!,
       ID.unique(),
-      appointment
+      {
+        ...appointment,
+        confirmationEmailSent: false,
+        reminderEmailSent: false,
+      }
     );
+
+    // Send confirmation email and create calendar event if scheduled
+    if (appointment.status === "scheduled") {
+      try {
+        const { sendConfirmationEmail } = await import("./email.actions");
+        const { createCalendarEvent } = await import("./calendar.actions");
+
+        // Send confirmation email
+        await sendConfirmationEmail(newAppointment.$id);
+        await databases.updateDocument(
+          DATABASE_ID!,
+          APPOINTMENT_COLLECTION_ID!,
+          newAppointment.$id,
+          { confirmationEmailSent: true }
+        );
+
+        // Create Google Calendar event
+        await createCalendarEvent(newAppointment.$id);
+      } catch (emailError) {
+        console.error("Error sending confirmation email or creating calendar event:", emailError);
+      }
+    }
 
     revalidatePath("/admin");
     return parseStringify(newAppointment);
@@ -131,12 +157,43 @@ export const updateAppointment = async ({
       APPOINTMENT_COLLECTION_ID!,
       appointmentId,
       appointment
-    );
+    ) as unknown as Appointment;
 
     if (!updatedAppointment) throw Error;
 
-    const smsMessage = `Greetings from CarePulse. ${type === "schedule" ? `Your appointment is confirmed for ${formatDateTime(appointment.schedule!, timeZone).dateTime} with Dr. ${appointment.primaryPhysician}` : `We regret to inform that your appointment for ${formatDateTime(appointment.schedule!, timeZone).dateTime} is cancelled. Reason:  ${appointment.cancellationReason}`}.`;
-    await sendSMSNotification(userId, smsMessage);
+    // Handle email and calendar based on type
+    try {
+      const { sendConfirmationEmail, sendCancellationEmail } = await import("./email.actions");
+      const { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent } = await import("./calendar.actions");
+
+      if (type === "schedule") {
+        // Send confirmation email if not already sent
+        if (!updatedAppointment.confirmationEmailSent) {
+          await sendConfirmationEmail(appointmentId);
+          await databases.updateDocument(
+            DATABASE_ID!,
+            APPOINTMENT_COLLECTION_ID!,
+            appointmentId,
+            { confirmationEmailSent: true }
+          );
+        }
+
+        // Create or update Google Calendar event
+        if (updatedAppointment.googleCalendarEventId) {
+          await updateCalendarEvent(appointmentId);
+        } else {
+          await createCalendarEvent(appointmentId);
+        }
+      } else if (type === "cancel") {
+        // Send cancellation email
+        await sendCancellationEmail(appointmentId, appointment.cancellationReason);
+
+        // Delete Google Calendar event
+        await deleteCalendarEvent(appointmentId);
+      }
+    } catch (emailError) {
+      console.error("Error handling email/calendar:", emailError);
+    }
 
     revalidatePath("/admin");
     return parseStringify(updatedAppointment);

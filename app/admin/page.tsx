@@ -1,61 +1,65 @@
-import Image from "next/image";
+import { CalendarPlus } from "lucide-react";
 import Link from "next/link";
 
 import { StatCard } from "@/components/StatCard";
 import { columns } from "@/components/table/columns";
 import { DataTable } from "@/components/table/DataTable";
+import { Button } from "@/components/ui/button";
+import { GlassCard, GlassCardContent, GlassCardHeader, GlassCardTitle } from "@/components/ui/glass-card";
 import { getRecentAppointmentList } from "@/lib/actions/appointment.actions";
 
 const AdminPage = async () => {
   const appointments = await getRecentAppointmentList();
 
   return (
-    <div className="mx-auto flex max-w-7xl flex-col space-y-14">
-      <header className="admin-header">
-        <Link href="/" className="cursor-pointer">
-          <Image
-            src="/assets/icons/logo-full.svg"
-            height={32}
-            width={162}
-            alt="logo"
-            className="h-8 w-fit"
-          />
-        </Link>
-
-        <p className="text-16-semibold">Admin Dashboard</p>
-      </header>
-
-      <main className="admin-main">
-        <section className="w-full space-y-4">
-          <h1 className="header">Welcome 👋</h1>
-          <p className="text-dark-700">
-            Start the day with managing new appointments
+    <div className="flex flex-col space-y-8">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Panou principal</h1>
+          <p className="text-gray-500">
+            Gestionați programările din această zi
           </p>
-        </section>
+        </div>
+        <Link href="/admin/appointments/new">
+          <Button className="shad-primary-btn gap-2">
+            <CalendarPlus className="size-4" />
+            Programare nouă
+          </Button>
+        </Link>
+      </div>
 
-        <section className="admin-stat">
-          <StatCard
-            type="appointments"
-            count={appointments.scheduledCount}
-            label="Scheduled appointments"
-            icon={"/assets/icons/appointments.svg"}
-          />
-          <StatCard
-            type="pending"
-            count={appointments.pendingCount}
-            label="Pending appointments"
-            icon={"/assets/icons/pending.svg"}
-          />
-          <StatCard
-            type="cancelled"
-            count={appointments.cancelledCount}
-            label="Cancelled appointments"
-            icon={"/assets/icons/cancelled.svg"}
-          />
-        </section>
+      {/* Stats Grid */}
+      <section className="grid gap-4 md:grid-cols-3">
+        <StatCard
+          type="appointments"
+          count={appointments.scheduledCount}
+          label="Programări confirmate"
+          icon={"/assets/icons/appointments.svg"}
+        />
+        <StatCard
+          type="pending"
+          count={appointments.pendingCount}
+          label="Programări în așteptare"
+          icon={"/assets/icons/pending.svg"}
+        />
+        <StatCard
+          type="cancelled"
+          count={appointments.cancelledCount}
+          label="Programări anulate"
+          icon={"/assets/icons/cancelled.svg"}
+        />
+      </section>
 
-        <DataTable columns={columns} data={appointments.documents} />
-      </main>
+      {/* Recent Appointments */}
+      <GlassCard variant="default" padding="lg">
+        <GlassCardHeader className="pb-4">
+          <GlassCardTitle>Programări recente</GlassCardTitle>
+        </GlassCardHeader>
+        <GlassCardContent>
+          <DataTable columns={columns} data={appointments.documents} />
+        </GlassCardContent>
+      </GlassCard>
     </div>
   );
 };
