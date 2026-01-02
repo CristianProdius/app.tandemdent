@@ -178,11 +178,11 @@
 
   /* Data Table */
   .data-table {
-    @apply z-10 w-full overflow-hidden rounded-2xl bg-white/80 backdrop-blur-lg border border-white/30 shadow-glass;
+    @apply z-10 w-full overflow-hidden rounded-xl;
   }
 
   .table-actions {
-    @apply flex w-full items-center justify-between space-x-2 p-4;
+    @apply flex w-full items-center justify-between space-x-2 p-4 bg-transparent rounded-b-xl border-t border-gray-100/50;
   }
 
   /* ===== ALIGNMENTS */
@@ -293,15 +293,15 @@
   }
 
   .shad-table {
-    @apply rounded-2xl overflow-hidden !important;
+    @apply rounded-xl overflow-hidden bg-transparent !important;
   }
 
   .shad-table-row-header {
-    @apply border-b border-gray-100 text-gray-600 bg-gray-50/50 hover:bg-transparent font-medium !important;
+    @apply border-b border-gray-200/50 text-gray-600 bg-gold-50/30 hover:bg-gold-50/40 font-medium !important;
   }
 
   .shad-table-row {
-    @apply border-b border-gray-100 text-gray-700 hover:bg-gold-50/30 transition-colors duration-200 !important;
+    @apply border-b border-gray-100/50 text-gray-700 bg-white/30 hover:bg-white/50 transition-colors duration-200 !important;
   }
 
   .shad-otp {

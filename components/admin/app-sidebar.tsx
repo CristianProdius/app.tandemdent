@@ -1,6 +1,15 @@
 "use client";
 
-import { Calendar, Home, LogOut, Stethoscope, Users } from "lucide-react";
+import {
+  Calendar,
+  ClipboardList,
+  Home,
+  LogOut,
+  Settings,
+  Sparkles,
+  Stethoscope,
+  Users,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -11,6 +20,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -20,26 +30,57 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
-const navItems = [
+// Navigation structure with sections
+const navSections = [
   {
-    label: "Panou principal",
-    href: "/admin",
-    icon: Home,
+    label: "Clinică",
+    items: [
+      {
+        label: "Panou principal",
+        href: "/admin",
+        icon: Home,
+      },
+      {
+        label: "Programări",
+        href: "/admin/appointments",
+        icon: Calendar,
+      },
+      {
+        label: "Pacienți",
+        href: "/admin/patients",
+        icon: Users,
+      },
+      {
+        label: "Tratamente",
+        href: "/admin/treatments",
+        icon: ClipboardList,
+      },
+    ],
   },
   {
-    label: "Programări",
-    href: "/admin/appointments",
-    icon: Calendar,
+    label: "Personal",
+    items: [
+      {
+        label: "Medici",
+        href: "/admin/doctors",
+        icon: Stethoscope,
+      },
+    ],
   },
   {
-    label: "Pacienți",
-    href: "/admin/patients",
-    icon: Users,
-  },
-  {
-    label: "Medici",
-    href: "/admin/doctors",
-    icon: Stethoscope,
+    label: "Setări",
+    items: [
+      {
+        label: "Servicii",
+        href: "/admin/services",
+        icon: Sparkles,
+      },
+      {
+        label: "Setări",
+        href: "/admin/settings",
+        icon: Settings,
+      },
+    ],
   },
 ];
 
@@ -75,42 +116,49 @@ export function AppSidebar() {
 
       {/* Navigation */}
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navItems.map((item) => {
-                const isActive =
-                  pathname === item.href ||
-                  (item.href !== "/admin" && pathname.startsWith(item.href));
+        {navSections.map((section) => (
+          <SidebarGroup key={section.label}>
+            {!isCollapsed && (
+              <SidebarGroupLabel className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                {section.label}
+              </SidebarGroupLabel>
+            )}
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {section.items.map((item) => {
+                  const isActive =
+                    pathname === item.href ||
+                    (item.href !== "/admin" && pathname.startsWith(item.href));
 
-                return (
-                  <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={isActive}
-                      tooltip={item.label}
-                      className={cn(
-                        "transition-all duration-200",
-                        isActive &&
-                          "bg-gold-50/80 text-gold-700 border-l-2 border-gold-500 rounded-l-none"
-                      )}
-                    >
-                      <Link href={item.href}>
-                        <item.icon
-                          className={cn(
-                            "size-4",
-                            isActive ? "text-gold-600" : "text-gray-500"
-                          )}
-                        />
-                        <span>{item.label}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+                  return (
+                    <SidebarMenuItem key={item.href}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={isActive}
+                        tooltip={item.label}
+                        className={cn(
+                          "transition-all duration-200",
+                          isActive &&
+                            "bg-gold-50/80 text-gold-700 border-l-2 border-gold-500 rounded-l-none"
+                        )}
+                      >
+                        <Link href={item.href}>
+                          <item.icon
+                            className={cn(
+                              "size-4",
+                              isActive ? "text-gold-600" : "text-gray-500"
+                            )}
+                          />
+                          <span>{item.label}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
 
       {/* Footer */}

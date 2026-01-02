@@ -76,4 +76,47 @@ export interface Service extends Models.Document {
   duration: number; // Duration in minutes
   price: number;
   isActive: boolean;
+  category?: "medical" | "cosmetic";
+}
+
+// Tooth condition types
+export type ToothCondition =
+  | "healthy"
+  | "caries"
+  | "decay"
+  | "fracture"
+  | "missing"
+  | "filled"
+  | "crown"
+  | "root_canal"
+  | "implant";
+
+// Treatment types
+export type TreatmentType =
+  | "examination"
+  | "cleaning"
+  | "tooth_filling"
+  | "root_canal"
+  | "crown"
+  | "extraction"
+  | "whitening"
+  | "implant"
+  | "scaling"
+  | "polishing";
+
+// Treatment status
+export type TreatmentStatus = "pending" | "in_progress" | "done";
+
+// Treatment interface
+export interface Treatment extends Models.Document {
+  patientId: string;
+  toothNumber: number; // FDI notation: 11-18, 21-28, 31-38, 41-48
+  condition: ToothCondition;
+  treatment: TreatmentType;
+  status: TreatmentStatus;
+  doctorId: string;
+  doctorName?: string;
+  appointmentId?: string;
+  notes?: string;
+  date: string;
 }

@@ -28,15 +28,42 @@ export const createUser = async (user: CreateUserParams) => {
 
     return parseStringify(newuser);
   } catch (error: any) {
-    // Check existing user
+    console.error("Appwrite user creation error:", {
+      code: error?.code,
+      message: error?.message,
+      type: error?.type,
+      response: error?.response,
+    });
+
+    // Check existing user - could be duplicate email OR phone
     if (error && error?.code === 409) {
-      const existingUser = await users.list([
+      // Try to find by email first
+      const byEmail = await users.list([
         Query.equal("email", [user.email]),
       ]);
 
-      return existingUser.users[0];
+      if (byEmail.users[0]) {
+        return byEmail.users[0];
+      }
+
+      // If not found by email, try by phone
+      if (user.phone) {
+        const byPhone = await users.list([
+          Query.equal("phone", [user.phone]),
+        ]);
+
+        if (byPhone.users[0]) {
+          return byPhone.users[0];
+        }
+      }
+
+      // User exists but we couldn't find them - throw helpful error
+      throw new Error("Un utilizator cu acest email sau telefon există deja");
     }
-    console.error("An error occurred while creating a new user:", error);
+
+    // Re-throw with detailed message
+    const errorMessage = error?.message || error?.response?.message || "Unknown Appwrite error";
+    throw new Error(`Appwrite: ${errorMessage}`);
   }
 };
 
@@ -216,7 +243,7 @@ export const createPatientAdmin = async (patient: {
   primaryPhysician?: string;
 }) => {
   try {
-    // First create the Appwrite user
+    // First create the Appwrite user (or get existing one)
     const newUser = await createUser({
       name: patient.name,
       email: patient.email,
@@ -227,7 +254,19 @@ export const createPatientAdmin = async (patient: {
       throw new Error("Failed to create user");
     }
 
-    // Then create the patient document
+    // Check if a patient document already exists for this user
+    const existingPatients = await databases.listDocuments(
+      DATABASE_ID!,
+      PATIENT_COLLECTION_ID!,
+      [Query.equal("userId", [newUser.$id])]
+    );
+
+    if (existingPatients.documents.length > 0) {
+      // Patient already exists, return the existing one
+      return parseStringify(existingPatients.documents[0]);
+    }
+
+    // Create new patient document
     const newPatient = await databases.createDocument(
       DATABASE_ID!,
       PATIENT_COLLECTION_ID!,
@@ -238,7 +277,7 @@ export const createPatientAdmin = async (patient: {
         email: patient.email,
         phone: patient.phone,
         birthDate: patient.birthDate || new Date(),
-        gender: patient.gender || "Masculin",
+        gender: patient.gender || "male",
         primaryPhysician: patient.primaryPhysician || "",
         privacyConsent: true,
         address: "",
